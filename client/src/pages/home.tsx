@@ -311,16 +311,15 @@ export default function Home() {
             <Button
               size="lg"
               onClick={() => scrollToSection("menu")}
-              className="bg-white text-primary border-2 border-white hover:bg-white/90 transition-all px-8 py-6 text-base sm:text-lg font-semibold shadow-lg"
+              className="bg-primary text-white border-2 border-primary hover:bg-primary/90 transition-all px-8 py-6 text-base sm:text-lg font-semibold shadow-lg"
               data-testid="button-view-menu"
             >
               View Menu
             </Button>
             <Button
               size="lg"
-              variant="outline"
               onClick={() => setOrderModalOpen(true)}
-              className="bg-transparent backdrop-blur-sm border-2 border-white/80 text-white hover:bg-white/10 transition-all px-8 py-6 text-base sm:text-lg font-semibold"
+              className="bg-primary text-white border-2 border-primary hover:bg-primary/90 transition-all px-8 py-6 text-base sm:text-lg font-semibold shadow-lg"
               data-testid="button-order-online"
             >
               Order Online
