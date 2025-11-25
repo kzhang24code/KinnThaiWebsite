@@ -15,10 +15,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/theme-provider";
 import abstractBgImage from "@assets/generated_images/abstract_red_white_neutral_gradient.png";
 import chefImage from "@assets/generated_images/thai_chef_in_kitchen.png";
-import padThaiImage from "@assets/generated_images/pad_thai_dish_overhead.png";
-import greenCurryImage from "@assets/generated_images/green_curry_dish_overhead.png";
-import tomYumImage from "@assets/generated_images/tom_yum_soup_overhead.png";
-import mangoStickyRiceImage from "@assets/generated_images/mango_sticky_rice_dessert.png";
+import basilFriedRiceImage from "@assets/dish-basil-fried-rice.png";
+import khaoSoiImage from "@assets/dish-khao-soi.png";
+import padThaiShrimpImage from "@assets/dish-pad-thai-shrimp.png";
+import springRollsImage from "@assets/dish-spring-rolls.png";
 
 const timeSlots = [
   "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM",
@@ -28,28 +28,28 @@ const timeSlots = [
 
 const popularDishes = [
   {
-    name: "Pad Thai",
-    description: "Stir-fried rice noodles with fresh sprouts, bean sprouts, crushed peanuts, and lime.",
+    name: "Basil Fried Rice",
+    description: "Aromatic fried rice with Thai basil, stir-fried beef, and topped with a sunny-side egg.",
     price: "$16.95",
-    image: padThaiImage
+    image: basilFriedRiceImage
   },
   {
-    name: "Green Curry",
-    description: "Spicy green curry made with green beans, bamboo shoots, and fresh basil.",
+    name: "Khao Soi",
+    description: "Northern Thai curry noodles with crispy egg noodles, tender meat, and fresh herbs.",
     price: "$17.95",
-    image: greenCurryImage
+    image: khaoSoiImage
   },
   {
-    name: "Tom Yum Soup",
-    description: "Hot and sour lemongrass soup with mushrooms and fresh carrots.",
-    price: "$9.95",
-    image: tomYumImage
+    name: "Pad Thai Shrimp",
+    description: "Classic stir-fried rice noodles with grilled jumbo shrimp, bean sprouts, and lime.",
+    price: "$18.95",
+    image: padThaiShrimpImage
   },
   {
-    name: "Mango Sticky Rice",
-    description: "Sweet sticky rice with ripe mango slices, drizzled with coconut cream.",
-    price: "$5.95",
-    image: mangoStickyRiceImage
+    name: "Crispy Spring Rolls",
+    description: "Golden fried spring rolls filled with savory vegetables, served with sweet chili sauce.",
+    price: "$8.95",
+    image: springRollsImage
   }
 ];
 
