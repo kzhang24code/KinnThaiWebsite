@@ -1,23 +1,19 @@
 import { useState, useEffect } from "react";
-import { Calendar, MapPin, Phone, Mail, Clock, ChevronDown, Menu, X, Moon, Sun } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { insertReservationSchema, type InsertReservation } from "@shared/schema";
-import { format } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isBefore, startOfToday, getDay } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/theme-provider";
-import heroImage from "@assets/generated_images/elegant_thai_restaurant_interior.png";
+import abstractBgImage from "@assets/generated_images/abstract_red_white_neutral_gradient.png";
 import chefImage from "@assets/generated_images/thai_chef_in_kitchen.png";
 import padThaiImage from "@assets/generated_images/pad_thai_dish_overhead.png";
 import greenCurryImage from "@assets/generated_images/green_curry_dish_overhead.png";
@@ -25,11 +21,9 @@ import tomYumImage from "@assets/generated_images/tom_yum_soup_overhead.png";
 import mangoStickyRiceImage from "@assets/generated_images/mango_sticky_rice_dessert.png";
 
 const timeSlots = [
-  "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM",
-  "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM",
-  "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM",
-  "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM",
-  "9:00 PM", "9:30 PM"
+  "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM",
+  "2:00 PM", "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM",
+  "7:30 PM", "8:00 PM"
 ];
 
 const popularDishes = [
@@ -61,11 +55,17 @@ const popularDishes = [
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [date, setDate] = useState<Date>();
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
   const { theme, toggleTheme } = useTheme();
+
+  // Reservation wizard state
+  const [wizardStep, setWizardStep] = useState<"time" | "client">("time");
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [partySize, setPartySize] = useState(2);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const form = useForm<InsertReservation>({
     resolver: zodResolver(insertReservationSchema),
@@ -86,7 +86,10 @@ export default function Home() {
     onSuccess: () => {
       setSubmitSuccess(true);
       form.reset();
-      setDate(undefined);
+      setSelectedDate(undefined);
+      setSelectedTime("");
+      setPartySize(2);
+      setWizardStep("time");
       toast({
         title: "Reservation Received!",
         description: "We'll contact you shortly to confirm your reservation.",
@@ -103,7 +106,6 @@ export default function Home() {
     }
   });
 
-  // Handle scroll for sticky navigation with proper cleanup
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -126,6 +128,41 @@ export default function Home() {
 
   const onSubmit = (data: InsertReservation) => {
     createReservation.mutate(data);
+  };
+
+  // Calendar helpers
+  const today = startOfToday();
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const startDayOfWeek = getDay(monthStart);
+
+  const goToPrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+  const goToNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+
+  const handleDateSelect = (day: Date) => {
+    if (!isBefore(day, today)) {
+      setSelectedDate(day);
+      form.setValue("date", format(day, "yyyy-MM-dd"));
+    }
+  };
+
+  const handleTimeSelect = (time: string) => {
+    setSelectedTime(time);
+    form.setValue("time", time);
+  };
+
+  const handlePartySizeChange = (size: number) => {
+    setPartySize(size);
+    form.setValue("partySize", size);
+  };
+
+  const canProceedToClient = selectedDate && selectedTime;
+
+  const handleNextStep = () => {
+    if (canProceedToClient) {
+      setWizardStep("client");
+    }
   };
 
   return (
@@ -267,13 +304,13 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with Abstract Background */}
       <section id="hero" className="relative min-h-screen flex items-center justify-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage})` }}
+          style={{ backgroundImage: `url(${abstractBgImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
         
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
@@ -413,10 +450,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Reservations Section */}
+      {/* Reservations Section - New Wizard Design */}
       <section id="reservations" className="py-24 sm:py-32 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Reserve Your Table
             </h2>
@@ -433,200 +470,351 @@ export default function Home() {
             </div>
           )}
           
-          <Card className="p-6 sm:p-8">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Left Column - Calendar */}
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="date"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel className="text-base font-semibold mb-3">Select Date</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant="outline"
-                                  className={`w-full justify-start text-left font-normal h-auto py-4 ${
-                                    !date && "text-muted-foreground"
-                                  }`}
-                                  data-testid="button-select-date"
-                                >
-                                  <Calendar className="mr-2 h-4 w-4" />
-                                  {date ? format(date, "PPP") : "Pick a date"}
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <CalendarComponent
-                                mode="single"
-                                selected={date}
-                                onSelect={(newDate) => {
-                                  setDate(newDate);
-                                  field.onChange(newDate ? format(newDate, "yyyy-MM-dd") : "");
-                                }}
-                                disabled={(date) => date < new Date()}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+          <Card className="overflow-hidden">
+            {/* Step Tabs */}
+            <div className="flex border-b">
+              <button
+                onClick={() => setWizardStep("time")}
+                className={`flex-1 py-4 text-center font-semibold transition-colors ${
+                  wizardStep === "time"
+                    ? "bg-primary text-white"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+                data-testid="tab-time"
+              >
+                Time
+              </button>
+              <button
+                onClick={() => canProceedToClient && setWizardStep("client")}
+                className={`flex-1 py-4 text-center font-semibold transition-colors ${
+                  wizardStep === "client"
+                    ? "bg-primary text-white"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                } ${!canProceedToClient ? "cursor-not-allowed opacity-50" : ""}`}
+                disabled={!canProceedToClient}
+                data-testid="tab-client"
+              >
+                Client
+              </button>
+            </div>
+            
+            <div className="p-6 lg:p-8">
+              {wizardStep === "time" ? (
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                  {/* Left Sidebar */}
+                  <div className="lg:col-span-1 space-y-8">
+                    <div className="p-4 bg-muted/50 rounded-md">
+                      <h3 className="font-serif text-xl font-bold text-foreground mb-2">Book a Table</h3>
+                      <p className="text-sm text-muted-foreground">Select a date and time for your reservation</p>
+                    </div>
                     
-                    <FormField
-                      control={form.control}
-                      name="time"
-                      render={({ field }) => (
-                        <FormItem className="mt-6">
-                          <FormLabel className="text-base font-semibold">Select Time</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="h-auto py-4" data-testid="select-time">
-                                <SelectValue placeholder="Choose a time slot" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {timeSlots.map((time) => (
-                                <SelectItem key={time} value={time}>
-                                  {time}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="partySize"
-                      render={({ field }) => (
-                        <FormItem className="mt-6">
-                          <FormLabel className="text-base font-semibold">Party Size</FormLabel>
-                          <Select
-                            onValueChange={(value) => field.onChange(parseInt(value))}
-                            value={field.value?.toString()}
+                    {/* Party Size */}
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        Party Size
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => handlePartySizeChange(size)}
+                            className={`w-10 h-10 rounded-md font-medium transition-colors ${
+                              partySize === size
+                                ? "bg-primary text-white"
+                                : "bg-muted text-foreground hover:bg-muted/80"
+                            }`}
+                            data-testid={`button-party-size-${size}`}
                           >
-                            <FormControl>
-                              <SelectTrigger className="h-auto py-4" data-testid="select-party-size">
-                                <SelectValue placeholder="Number of guests" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-                                <SelectItem key={num} value={num.toString()}>
-                                  {num} {num === 1 ? "Guest" : "Guests"}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">For larger parties, please call us</p>
+                    </div>
+                    
+                    <div className="p-4 bg-muted/50 rounded-md">
+                      <h3 className="font-serif text-lg font-bold text-primary">KINN THAI</h3>
+                      <p className="text-xs text-muted-foreground mt-1">123 Main Street, Downtown</p>
+                    </div>
                   </div>
                   
-                  {/* Right Column - Contact Info */}
-                  <div className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-base font-semibold">Full Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="John Doe"
-                              className="h-auto py-4"
-                              data-testid="input-name"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  {/* Main Calendar Area */}
+                  <div className="lg:col-span-3">
+                    {/* Current Time Display */}
+                    <div className="text-right text-sm text-muted-foreground mb-4">
+                      Our time: {format(new Date(), "h:mm a")} Local Time
+                    </div>
                     
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-base font-semibold">Email Address</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="email"
-                              placeholder="john@example.com"
-                              className="h-auto py-4"
-                              data-testid="input-email"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {/* Calendar Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <button
+                        onClick={goToPrevMonth}
+                        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium"
+                        data-testid="button-prev-month"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Prev Month
+                      </button>
+                      <h3 className="font-semibold text-lg text-foreground">
+                        {format(currentMonth, "MMMM yyyy")}
+                      </h3>
+                      <button
+                        onClick={goToNextMonth}
+                        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium"
+                        data-testid="button-next-month"
+                      >
+                        Next Month
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                     
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-base font-semibold">Phone Number</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="tel"
-                              placeholder="(555) 123-4567"
-                              className="h-auto py-4"
-                              data-testid="input-phone"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {/* Calendar Grid */}
+                    <div className="border rounded-md overflow-hidden mb-8">
+                      {/* Day Headers */}
+                      <div className="grid grid-cols-7 bg-muted/50">
+                        {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
+                          <div
+                            key={day}
+                            className={`py-3 text-center text-xs font-semibold ${
+                              day === "SAT" || day === "SUN" ? "text-primary" : "text-foreground"
+                            }`}
+                          >
+                            {day}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Calendar Days */}
+                      <div className="grid grid-cols-7">
+                        {/* Empty cells for days before the month starts */}
+                        {Array.from({ length: startDayOfWeek }).map((_, index) => (
+                          <div key={`empty-${index}`} className="py-4 text-center border-t" />
+                        ))}
+                        
+                        {/* Actual days */}
+                        {daysInMonth.map((day) => {
+                          const isToday = isSameDay(day, today);
+                          const isPast = isBefore(day, today);
+                          const isSelected = selectedDate && isSameDay(day, selectedDate);
+                          const dayOfWeek = getDay(day);
+                          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                          
+                          return (
+                            <button
+                              key={day.toISOString()}
+                              onClick={() => handleDateSelect(day)}
+                              disabled={isPast}
+                              className={`py-4 text-center border-t transition-colors ${
+                                isPast
+                                  ? "text-muted-foreground/40 cursor-not-allowed"
+                                  : isSelected
+                                  ? "bg-primary text-white font-bold"
+                                  : isToday
+                                  ? "bg-primary/10 text-primary font-semibold"
+                                  : isWeekend
+                                  ? "text-primary hover:bg-primary/10"
+                                  : "text-foreground hover:bg-muted"
+                              }`}
+                              data-testid={`button-date-${format(day, "yyyy-MM-dd")}`}
+                            >
+                              {format(day, "d")}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
                     
-                    <FormField
-                      control={form.control}
-                      name="specialRequests"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-base font-semibold">Special Requests (Optional)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Dietary restrictions, allergies, or special occasions..."
-                              className="resize-none min-h-[120px]"
-                              data-testid="input-special-requests"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {/* Time Slots */}
+                    <div>
+                      <h4 className="font-semibold text-lg text-foreground mb-4">Available start times</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {timeSlots.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            className={`px-4 py-3 rounded-md border-2 font-medium transition-colors ${
+                              selectedTime === time
+                                ? "bg-primary/10 border-primary text-primary"
+                                : "border-primary/30 text-foreground hover:border-primary hover:bg-primary/5"
+                            }`}
+                            data-testid={`button-time-${time.replace(/\s/g, "-").replace(":", "-")}`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
+                        <div className="w-3 h-3 rounded-full bg-primary/30" />
+                        <span>- Available</span>
+                      </div>
+                    </div>
+                    
+                    {/* Next Button */}
+                    <div className="flex justify-end mt-8">
+                      <Button
+                        onClick={handleNextStep}
+                        disabled={!canProceedToClient}
+                        size="lg"
+                        className="px-8"
+                        data-testid="button-next-step"
+                      >
+                        Continue to Details
+                        <ChevronRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex justify-center">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={createReservation.isPending}
-                    className="px-12 py-6 text-lg"
-                    data-testid="button-submit-reservation"
-                  >
-                    {createReservation.isPending ? "Submitting..." : "Reserve Table"}
-                  </Button>
+              ) : (
+                /* Client Details Step */
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                  {/* Left Sidebar - Summary */}
+                  <div className="lg:col-span-1 space-y-6">
+                    <div className="p-4 bg-muted/50 rounded-md">
+                      <h3 className="font-serif text-xl font-bold text-foreground mb-4">Your Reservation</h3>
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Date:</span>
+                          <p className="font-medium text-foreground">
+                            {selectedDate ? format(selectedDate, "EEEE, MMMM d, yyyy") : "-"}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Time:</span>
+                          <p className="font-medium text-foreground">{selectedTime || "-"}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Party Size:</span>
+                          <p className="font-medium text-foreground">{partySize} {partySize === 1 ? "Guest" : "Guests"}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-4"
+                        onClick={() => setWizardStep("time")}
+                        data-testid="button-edit-time"
+                      >
+                        Edit Selection
+                      </Button>
+                    </div>
+                    
+                    <div className="p-4 bg-muted/50 rounded-md">
+                      <h3 className="font-serif text-lg font-bold text-primary">KINN THAI</h3>
+                      <p className="text-xs text-muted-foreground mt-1">123 Main Street, Downtown</p>
+                    </div>
+                  </div>
+                  
+                  {/* Client Form */}
+                  <div className="lg:col-span-3">
+                    <h3 className="font-semibold text-lg text-foreground mb-6">Your Details</h3>
+                    
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Full Name</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="John Doe"
+                                    data-testid="input-name"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Email Address</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="email"
+                                    placeholder="john@example.com"
+                                    data-testid="input-email"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Phone Number</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="tel"
+                                  placeholder="(555) 123-4567"
+                                  data-testid="input-phone"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="specialRequests"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Special Requests (Optional)</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Dietary restrictions, allergies, or special occasions..."
+                                  className="resize-none min-h-[100px]"
+                                  data-testid="input-special-requests"
+                                  {...field}
+                                  value={field.value ?? ""}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <div className="flex gap-4 justify-end pt-4">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setWizardStep("time")}
+                            data-testid="button-back-step"
+                          >
+                            <ChevronLeft className="w-4 h-4 mr-2" />
+                            Back
+                          </Button>
+                          <Button
+                            type="submit"
+                            size="lg"
+                            disabled={createReservation.isPending}
+                            className="px-8"
+                            data-testid="button-submit-reservation"
+                          >
+                            {createReservation.isPending ? "Submitting..." : "Confirm Reservation"}
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  </div>
                 </div>
-              </form>
-            </Form>
+              )}
+            </div>
           </Card>
         </div>
       </section>
