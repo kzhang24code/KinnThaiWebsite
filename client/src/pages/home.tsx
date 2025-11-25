@@ -22,99 +22,83 @@ import khaoSoiImage from "@assets/dish-khao-soi.png";
 import padThaiShrimpImage from "@assets/dish-pad-thai-shrimp.png";
 import springRollsImage from "@assets/dish-spring-rolls.png";
 
-// Animated Tube Man Component
+// Animated Tube Man Component - matches the real inflatable mascot
 function TubeMan() {
   return (
-    <div className="relative w-24 h-40 sm:w-32 sm:h-52">
+    <div className="relative w-20 h-48 sm:w-28 sm:h-64">
       <svg
-        viewBox="0 0 100 180"
+        viewBox="0 0 120 220"
         className="w-full h-full"
         style={{ overflow: 'visible' }}
       >
-        {/* Body */}
-        <ellipse
-          cx="50"
-          cy="110"
-          rx="18"
-          ry="50"
-          fill="hsl(var(--primary))"
-          className="origin-bottom"
-          style={{
-            animation: 'tubeWave 0.8s ease-in-out infinite',
-            transformOrigin: '50px 160px'
-          }}
-        />
+        {/* Main group that sways */}
+        <g style={{ animation: 'tubeWave 1.2s ease-in-out infinite', transformOrigin: '60px 200px' }}>
+          
+          {/* Black hair/streamers on top */}
+          <g style={{ animation: 'hairWave 0.4s ease-in-out infinite', transformOrigin: '60px 25px' }}>
+            <path d="M 50 25 Q 45 5 40 15" stroke="#222" strokeWidth="4" fill="none" strokeLinecap="round" />
+            <path d="M 55 22 Q 52 0 48 10" stroke="#222" strokeWidth="4" fill="none" strokeLinecap="round" />
+            <path d="M 60 20 Q 60 -2 58 8" stroke="#222" strokeWidth="4" fill="none" strokeLinecap="round" />
+            <path d="M 65 22 Q 68 0 72 10" stroke="#222" strokeWidth="4" fill="none" strokeLinecap="round" />
+            <path d="M 70 25 Q 75 5 80 15" stroke="#222" strokeWidth="4" fill="none" strokeLinecap="round" />
+          </g>
+          
+          {/* Head - rounder */}
+          <ellipse cx="60" cy="45" rx="20" ry="22" fill="#dc2626" />
+          
+          {/* Eyes - white ovals */}
+          <ellipse cx="52" cy="40" rx="6" ry="7" fill="white" />
+          <ellipse cx="68" cy="40" rx="6" ry="7" fill="white" />
+          
+          {/* Pupils */}
+          <circle cx="54" cy="41" r="3" fill="#222" />
+          <circle cx="70" cy="41" r="3" fill="#222" />
+          
+          {/* Big smile */}
+          <path
+            d="M 48 55 Q 60 70 72 55"
+            stroke="white"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+          />
+          
+          {/* Body - tall cylinder tube */}
+          <rect x="42" y="65" width="36" height="110" rx="18" fill="#dc2626" />
+          
+          {/* Left Arm - tube shape extending outward */}
+          <g style={{ animation: 'leftArm 0.5s ease-in-out infinite', transformOrigin: '42px 80px' }}>
+            <rect x="-15" y="70" width="60" height="16" rx="8" fill="#dc2626" transform="rotate(-45 42 78)" />
+          </g>
+          
+          {/* Right Arm - tube shape extending outward */}
+          <g style={{ animation: 'rightArm 0.5s ease-in-out infinite 0.25s', transformOrigin: '78px 80px' }}>
+            <rect x="75" y="70" width="60" height="16" rx="8" fill="#dc2626" transform="rotate(45 78 78)" />
+          </g>
+        </g>
         
-        {/* Head */}
-        <circle
-          cx="50"
-          cy="45"
-          r="22"
-          fill="hsl(var(--primary))"
-          style={{
-            animation: 'tubeWave 0.8s ease-in-out infinite',
-            transformOrigin: '50px 160px'
-          }}
-        />
-        
-        {/* Face - Eyes */}
-        <circle cx="42" cy="42" r="4" fill="white" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
-        <circle cx="58" cy="42" r="4" fill="white" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
-        <circle cx="43" cy="43" r="2" fill="#333" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
-        <circle cx="59" cy="43" r="2" fill="#333" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
-        
-        {/* Smile */}
-        <path
-          d="M 40 52 Q 50 62 60 52"
-          stroke="white"
-          strokeWidth="3"
-          fill="none"
-          strokeLinecap="round"
-          style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }}
-        />
-        
-        {/* Left Arm */}
-        <ellipse
-          cx="20"
-          cy="90"
-          rx="8"
-          ry="35"
-          fill="hsl(var(--primary))"
-          style={{
-            animation: 'leftArm 0.6s ease-in-out infinite',
-            transformOrigin: '28px 110px'
-          }}
-        />
-        
-        {/* Right Arm */}
-        <ellipse
-          cx="80"
-          cy="90"
-          rx="8"
-          ry="35"
-          fill="hsl(var(--primary))"
-          style={{
-            animation: 'rightArm 0.6s ease-in-out infinite 0.3s',
-            transformOrigin: '72px 110px'
-          }}
-        />
-        
-        {/* Base */}
-        <ellipse cx="50" cy="165" rx="22" ry="10" fill="#333" />
+        {/* Black base/blower - stays still */}
+        <ellipse cx="60" cy="178" rx="24" ry="8" fill="#222" />
+        <rect x="36" y="178" width="48" height="25" fill="#222" />
+        <ellipse cx="60" cy="203" rx="24" ry="8" fill="#1a1a1a" />
       </svg>
       
       <style>{`
         @keyframes tubeWave {
-          0%, 100% { transform: rotate(-3deg); }
-          50% { transform: rotate(3deg); }
+          0%, 100% { transform: rotate(-4deg); }
+          50% { transform: rotate(4deg); }
+        }
+        @keyframes hairWave {
+          0%, 100% { transform: rotate(-8deg); }
+          50% { transform: rotate(8deg); }
         }
         @keyframes leftArm {
-          0%, 100% { transform: rotate(-25deg); }
-          50% { transform: rotate(15deg); }
+          0%, 100% { transform: rotate(-20deg); }
+          50% { transform: rotate(25deg); }
         }
         @keyframes rightArm {
-          0%, 100% { transform: rotate(25deg); }
-          50% { transform: rotate(-15deg); }
+          0%, 100% { transform: rotate(20deg); }
+          50% { transform: rotate(-25deg); }
         }
       `}</style>
     </div>
