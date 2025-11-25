@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/theme-provider";
-import abstractBgImage from "@assets/generated_images/abstract_red_white_neutral_gradient.png";
+import heroBgImage from "@assets/generated_images/elegant_red_watercolor_gradient.png";
 import basilFriedRiceImage from "@assets/dish-basil-fried-rice.png";
 import khaoSoiImage from "@assets/dish-khao-soi.png";
 import padThaiShrimpImage from "@assets/dish-pad-thai-shrimp.png";
@@ -295,7 +295,7 @@ export default function Home() {
       <section id="hero" className="relative min-h-screen flex items-center justify-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${abstractBgImage})` }}
+          style={{ backgroundImage: `url(${heroBgImage})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
         
@@ -487,7 +487,7 @@ export default function Home() {
                     
                     <div className="p-4 bg-muted/50 rounded-md">
                       <h3 className="font-serif text-lg font-bold text-primary">KINN THAI</h3>
-                      <p className="text-xs text-muted-foreground mt-1">123 Main Street, Downtown</p>
+                      <p className="text-xs text-muted-foreground mt-1">100 Foundry Drive Ste 17, West Lafayette</p>
                     </div>
                   </div>
                   
@@ -653,7 +653,7 @@ export default function Home() {
                     
                     <div className="p-4 bg-muted/50 rounded-md">
                       <h3 className="font-serif text-lg font-bold text-primary">KINN THAI</h3>
-                      <p className="text-xs text-muted-foreground mt-1">123 Main Street, Downtown</p>
+                      <p className="text-xs text-muted-foreground mt-1">100 Foundry Drive Ste 17, West Lafayette</p>
                     </div>
                   </div>
                   
@@ -711,7 +711,7 @@ export default function Home() {
                               <FormControl>
                                 <Input
                                   type="tel"
-                                  placeholder="(555) 123-4567"
+                                  placeholder="(765) 607-1751"
                                   data-testid="input-phone"
                                   {...field}
                                 />
@@ -787,7 +787,7 @@ export default function Home() {
             {/* Map */}
             <div className="rounded-md overflow-hidden shadow-lg h-[400px] lg:h-[450px]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2!2d-73.99!3d40.75!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQ1JzAwLjAiTiA3M8KwNTknMjQuMCJX!5e0!3m2!1sen!2sus!4v1635000000000!5m2!1sen!2sus"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3026.5!2d-86.9175!3d40.4317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8812e2b5d7b5d5d5%3A0x0!2s100+Foundry+Dr+Ste+17%2C+West+Lafayette%2C+IN+47906!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -808,10 +808,10 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg text-foreground mb-1">Address</h3>
-                    <p className="text-muted-foreground">123 Main Street</p>
-                    <p className="text-muted-foreground">Downtown, ST 12345</p>
+                    <p className="text-muted-foreground">100 Foundry Drive Ste 17</p>
+                    <p className="text-muted-foreground">West Lafayette, IN 47906</p>
                     <a
-                      href="https://maps.google.com/?q=123+Main+Street+Downtown"
+                      href="https://maps.google.com/?q=100+Foundry+Drive+Ste+17+West+Lafayette+IN+47906"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-primary hover:underline mt-2 text-sm font-medium"
@@ -856,11 +856,11 @@ export default function Home() {
                   <div>
                     <h3 className="font-semibold text-lg text-foreground mb-1">Contact</h3>
                     <a
-                      href="tel:+15551234567"
+                      href="tel:+17656071751"
                       className="text-muted-foreground hover:text-primary transition-colors"
                       data-testid="link-phone-location"
                     >
-                      (555) 123-4567
+                      (765) 607-1751
                     </a>
                     <p className="text-sm text-muted-foreground mt-1">
                       Call for reservations or takeout orders
@@ -927,12 +927,12 @@ export default function Home() {
                 Prefer to order directly?
               </p>
               <a
-                href="tel:+15551234567"
+                href="tel:+17656071751"
                 className="flex items-center justify-center gap-2 p-3 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors font-medium"
                 data-testid="link-call-order"
               >
                 <Phone className="w-4 h-4" />
-                Call (555) 123-4567
+                Call (765) 607-1751
               </a>
             </div>
           </div>
@@ -962,7 +962,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <p>123 Main Street, Downtown, ST 12345</p>
+                  <p>100 Foundry Drive Ste 17, West Lafayette, IN 47906</p>
                 </div>
               </div>
             </div>
@@ -973,21 +973,21 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 flex-shrink-0" />
                   <a 
-                    href="tel:+15551234567" 
+                    href="tel:+17656071751" 
                     className="hover:text-primary transition-colors"
                     data-testid="link-phone"
                   >
-                    (555) 123-4567
+                    (765) 607-1751
                   </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 flex-shrink-0" />
                   <a 
-                    href="mailto:info@kinnthaieatery.com" 
+                    href="mailto:kinnthai.group@gmail.com" 
                     className="hover:text-primary transition-colors"
                     data-testid="link-email"
                   >
-                    info@kinnthaieatery.com
+                    kinnthai.group@gmail.com
                   </a>
                 </div>
               </div>
