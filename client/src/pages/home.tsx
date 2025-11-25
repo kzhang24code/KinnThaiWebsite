@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users, ExternalLink, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { SiDoordash, SiUbereats } from "react-icons/si";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
@@ -56,6 +58,7 @@ const popularDishes = [
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
   const { toast } = useToast();
   const { theme, toggleTheme } = useTheme();
 
@@ -316,6 +319,7 @@ export default function Home() {
             <Button
               size="lg"
               variant="outline"
+              onClick={() => setOrderModalOpen(true)}
               className="bg-white/10 backdrop-blur-md border-2 border-white text-white hover:bg-white hover:text-primary transition-all px-8 py-6 text-base sm:text-lg font-medium"
               data-testid="button-order-online"
             >
@@ -766,6 +770,174 @@ export default function Home() {
           </Card>
         </div>
       </section>
+
+      {/* Location Section with Google Maps */}
+      <section id="location" className="py-24 sm:py-32 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-4">
+              Find Us
+            </h2>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Visit us for an authentic Thai dining experience
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Map */}
+            <div className="rounded-md overflow-hidden shadow-lg h-[400px] lg:h-[450px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2!2d-73.99!3d40.75!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQ1JzAwLjAiTiA3M8KwNTknMjQuMCJX!5e0!3m2!1sen!2sus!4v1635000000000!5m2!1sen!2sus"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="KINN Thai Eatery Location"
+                data-testid="map-google"
+              />
+            </div>
+            
+            {/* Location Info */}
+            <div className="flex flex-col justify-center space-y-8">
+              <Card className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-primary/10 rounded-md">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-foreground mb-1">Address</h3>
+                    <p className="text-muted-foreground">123 Main Street</p>
+                    <p className="text-muted-foreground">Downtown, ST 12345</p>
+                    <a
+                      href="https://maps.google.com/?q=123+Main+Street+Downtown"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-primary hover:underline mt-2 text-sm font-medium"
+                      data-testid="link-get-directions"
+                    >
+                      <Navigation className="w-4 h-4" />
+                      Get Directions
+                    </a>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-primary/10 rounded-md">
+                    <Clock className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-foreground mb-2">Hours</h3>
+                    <div className="space-y-1 text-muted-foreground">
+                      <div className="flex justify-between gap-8">
+                        <span>Monday - Friday</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                      </div>
+                      <div className="flex justify-between gap-8">
+                        <span>Saturday - Sunday</span>
+                        <span>12:00 PM - 10:00 PM</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-primary font-medium mt-3">
+                      Lunch Special: Weekdays 12:00 - 2:30 PM
+                    </p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-primary/10 rounded-md">
+                    <Phone className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-foreground mb-1">Contact</h3>
+                    <a
+                      href="tel:+15551234567"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                      data-testid="link-phone-location"
+                    >
+                      (555) 123-4567
+                    </a>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Call for reservations or takeout orders
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Order Online Modal */}
+      <Dialog open={orderModalOpen} onOpenChange={setOrderModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-2xl text-center">Order Online</DialogTitle>
+            <DialogDescription className="text-center">
+              Choose your preferred delivery service
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <a
+              href="https://www.doordash.com/store/kinn-thai-eatery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-4 rounded-md border-2 border-border hover:border-primary hover:bg-primary/5 transition-all group"
+              data-testid="link-doordash"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#FF3008] rounded-md flex items-center justify-center">
+                  <SiDoordash className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">DoorDash</h3>
+                  <p className="text-sm text-muted-foreground">Fast delivery to your door</p>
+                </div>
+              </div>
+              <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </a>
+            
+            <a
+              href="https://www.ubereats.com/store/kinn-thai-eatery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-4 rounded-md border-2 border-border hover:border-primary hover:bg-primary/5 transition-all group"
+              data-testid="link-ubereats"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#06C167] rounded-md flex items-center justify-center">
+                  <SiUbereats className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Uber Eats</h3>
+                  <p className="text-sm text-muted-foreground">Order with Uber Eats</p>
+                </div>
+              </div>
+              <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </a>
+            
+            <div className="pt-4 border-t border-border">
+              <p className="text-center text-sm text-muted-foreground mb-3">
+                Prefer to order directly?
+              </p>
+              <a
+                href="tel:+15551234567"
+                className="flex items-center justify-center gap-2 p-3 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors font-medium"
+                data-testid="link-call-order"
+              >
+                <Phone className="w-4 h-4" />
+                Call (555) 123-4567
+              </a>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <footer className="bg-card border-t border-card-border py-16">
