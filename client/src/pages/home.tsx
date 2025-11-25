@@ -22,6 +22,105 @@ import khaoSoiImage from "@assets/dish-khao-soi.png";
 import padThaiShrimpImage from "@assets/dish-pad-thai-shrimp.png";
 import springRollsImage from "@assets/dish-spring-rolls.png";
 
+// Animated Tube Man Component
+function TubeMan() {
+  return (
+    <div className="relative w-24 h-40 sm:w-32 sm:h-52">
+      <svg
+        viewBox="0 0 100 180"
+        className="w-full h-full"
+        style={{ overflow: 'visible' }}
+      >
+        {/* Body */}
+        <ellipse
+          cx="50"
+          cy="110"
+          rx="18"
+          ry="50"
+          fill="hsl(var(--primary))"
+          className="origin-bottom"
+          style={{
+            animation: 'tubeWave 0.8s ease-in-out infinite',
+            transformOrigin: '50px 160px'
+          }}
+        />
+        
+        {/* Head */}
+        <circle
+          cx="50"
+          cy="45"
+          r="22"
+          fill="hsl(var(--primary))"
+          style={{
+            animation: 'tubeWave 0.8s ease-in-out infinite',
+            transformOrigin: '50px 160px'
+          }}
+        />
+        
+        {/* Face - Eyes */}
+        <circle cx="42" cy="42" r="4" fill="white" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
+        <circle cx="58" cy="42" r="4" fill="white" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
+        <circle cx="43" cy="43" r="2" fill="#333" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
+        <circle cx="59" cy="43" r="2" fill="#333" style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }} />
+        
+        {/* Smile */}
+        <path
+          d="M 40 52 Q 50 62 60 52"
+          stroke="white"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+          style={{ animation: 'tubeWave 0.8s ease-in-out infinite', transformOrigin: '50px 160px' }}
+        />
+        
+        {/* Left Arm */}
+        <ellipse
+          cx="20"
+          cy="90"
+          rx="8"
+          ry="35"
+          fill="hsl(var(--primary))"
+          style={{
+            animation: 'leftArm 0.6s ease-in-out infinite',
+            transformOrigin: '28px 110px'
+          }}
+        />
+        
+        {/* Right Arm */}
+        <ellipse
+          cx="80"
+          cy="90"
+          rx="8"
+          ry="35"
+          fill="hsl(var(--primary))"
+          style={{
+            animation: 'rightArm 0.6s ease-in-out infinite 0.3s',
+            transformOrigin: '72px 110px'
+          }}
+        />
+        
+        {/* Base */}
+        <ellipse cx="50" cy="165" rx="22" ry="10" fill="#333" />
+      </svg>
+      
+      <style>{`
+        @keyframes tubeWave {
+          0%, 100% { transform: rotate(-3deg); }
+          50% { transform: rotate(3deg); }
+        }
+        @keyframes leftArm {
+          0%, 100% { transform: rotate(-25deg); }
+          50% { transform: rotate(15deg); }
+        }
+        @keyframes rightArm {
+          0%, 100% { transform: rotate(25deg); }
+          50% { transform: rotate(-15deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 const timeSlots = [
   "11:00 AM", "11:30 AM", "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM",
   "2:00 PM", "5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM",
@@ -300,6 +399,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
         
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+          {/* Tube Man Mascot - positioned to the right */}
+          <div className="absolute right-4 sm:right-8 lg:right-0 top-1/2 -translate-y-1/2 opacity-90">
+            <TubeMan />
+          </div>
+          
           <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
             KINN Thai Eatery
           </h1>
@@ -339,16 +443,27 @@ export default function Home() {
       {/* Menu Preview Section */}
       <section id="menu" className="py-24 sm:py-32 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Signature Dishes
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
               Explore our most beloved creations, crafted with authentic Thai flavors
             </p>
+            
+            {/* Prominent View Full Menu Button */}
+            <Link href="/menu">
+              <Button
+                size="lg"
+                className="bg-primary text-white hover:bg-primary/90 px-10 py-6 text-lg font-semibold shadow-lg"
+                data-testid="button-full-menu-top"
+              >
+                View Full Menu
+              </Button>
+            </Link>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-12">
             {popularDishes.map((dish, index) => (
               <Card
                 key={index}
@@ -375,19 +490,6 @@ export default function Home() {
                 </CardContent>
               </Card>
             ))}
-          </div>
-          
-          <div className="text-center">
-            <Link href="/menu">
-              <Button
-                size="lg"
-                variant="outline"
-                className="px-8"
-                data-testid="button-full-menu"
-              >
-                View Full Menu
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
