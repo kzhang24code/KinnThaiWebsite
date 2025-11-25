@@ -15,7 +15,6 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/theme-provider";
 import abstractBgImage from "@assets/generated_images/abstract_red_white_neutral_gradient.png";
-import chefImage from "@assets/generated_images/thai_chef_in_kitchen.png";
 import basilFriedRiceImage from "@assets/dish-basil-fried-rice.png";
 import khaoSoiImage from "@assets/dish-khao-soi.png";
 import padThaiShrimpImage from "@assets/dish-pad-thai-shrimp.png";
@@ -196,15 +195,6 @@ export default function Home() {
                 Home
               </button>
               <button
-                onClick={() => scrollToSection("about")}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isScrolled ? "text-foreground" : "text-white"
-                }`}
-                data-testid="link-about"
-              >
-                About
-              </button>
-              <button
                 onClick={() => scrollToSection("menu")}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
                   isScrolled ? "text-foreground" : "text-white"
@@ -267,13 +257,6 @@ export default function Home() {
                 data-testid="link-home-mobile"
               >
                 Home
-              </button>
-              <button
-                onClick={() => scrollToSection("about")}
-                className="block w-full text-left text-base font-medium text-foreground hover:text-primary transition-colors py-2"
-                data-testid="link-about-mobile"
-              >
-                About
               </button>
               <button
                 onClick={() => scrollToSection("menu")}
@@ -349,51 +332,13 @@ export default function Home() {
           </div>
           
           <button
-            onClick={() => scrollToSection("about")}
+            onClick={() => scrollToSection("menu")}
             className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce"
-            aria-label="Scroll to About section"
-            data-testid="button-scroll-about"
+            aria-label="Scroll to Menu section"
+            data-testid="button-scroll-menu"
           >
             <ChevronDown className="w-8 h-8 text-white" />
           </button>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-24 sm:py-32 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
-              <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-6">
-                Our Story
-              </h2>
-              <div className="space-y-4 text-base sm:text-lg text-muted-foreground max-w-prose">
-                <p>
-                  KINN Thai Eatery was born from a passion for authentic Thai cuisine and a desire to share 
-                  the rich culinary traditions of Thailand with our community. Since opening our doors, 
-                  we've been committed to serving dishes that honor traditional recipes while embracing 
-                  modern culinary techniques.
-                </p>
-                <p>
-                  Our chef brings over 20 years of experience, having trained in Bangkok before bringing 
-                  these time-honored flavors to your table. Every dish is prepared with fresh ingredients, 
-                  traditional spices, and the care that Thai cooking deserves.
-                </p>
-                <p>
-                  From our aromatic curries to our perfectly balanced noodle dishes, we invite you to 
-                  experience the authentic taste of Thailand in an elegant, welcoming atmosphere.
-                </p>
-              </div>
-            </div>
-            
-            <div className="relative">
-              <img
-                src={chefImage}
-                alt="Chef preparing authentic Thai cuisine"
-                className="w-full h-auto rounded-md shadow-lg"
-              />
-            </div>
-          </div>
         </div>
       </section>
 
