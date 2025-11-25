@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users, ExternalLink, Navigation } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users, ExternalLink, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -311,7 +311,7 @@ export default function Home() {
             <Button
               size="lg"
               onClick={() => scrollToSection("menu")}
-              className="bg-white/10 backdrop-blur-md border-2 border-white text-white hover:bg-white hover:text-primary transition-all px-8 py-6 text-base sm:text-lg font-medium"
+              className="bg-white text-primary border-2 border-white hover:bg-white/90 transition-all px-8 py-6 text-base sm:text-lg font-semibold shadow-lg"
               data-testid="button-view-menu"
             >
               View Menu
@@ -320,7 +320,7 @@ export default function Home() {
               size="lg"
               variant="outline"
               onClick={() => setOrderModalOpen(true)}
-              className="bg-white/10 backdrop-blur-md border-2 border-white text-white hover:bg-white hover:text-primary transition-all px-8 py-6 text-base sm:text-lg font-medium"
+              className="bg-transparent backdrop-blur-sm border-2 border-white/80 text-white hover:bg-white/10 transition-all px-8 py-6 text-base sm:text-lg font-semibold"
               data-testid="button-order-online"
             >
               Order Online
@@ -328,21 +328,12 @@ export default function Home() {
             <Button
               size="lg"
               onClick={() => scrollToSection("reservations")}
-              className="bg-primary/90 backdrop-blur-md border-2 border-primary text-white hover:bg-primary transition-all px-8 py-6 text-base sm:text-lg font-medium"
+              className="bg-primary text-white border-2 border-primary hover:bg-primary/90 transition-all px-8 py-6 text-base sm:text-lg font-semibold shadow-lg"
               data-testid="button-book-table"
             >
               Book a Table
             </Button>
           </div>
-          
-          <button
-            onClick={() => scrollToSection("menu")}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce"
-            aria-label="Scroll to Menu section"
-            data-testid="button-scroll-menu"
-          >
-            <ChevronDown className="w-8 h-8 text-white" />
-          </button>
         </div>
       </section>
 
