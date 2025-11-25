@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { MapPin, Phone, Mail, Clock, ChevronDown, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -438,14 +439,16 @@ export default function Home() {
           </div>
           
           <div className="text-center">
-            <Button
-              size="lg"
-              variant="outline"
-              className="px-8"
-              data-testid="button-full-menu"
-            >
-              View Full Menu
-            </Button>
+            <Link href="/menu">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8"
+                data-testid="button-full-menu"
+              >
+                View Full Menu
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
