@@ -382,12 +382,12 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
         
+        {/* Tube Man Mascot - bottom right corner, outside content */}
+        <div className="absolute bottom-8 right-4 sm:right-8 lg:right-16 z-20 opacity-90 hidden sm:block">
+          <TubeMan />
+        </div>
+        
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-          {/* Tube Man Mascot - positioned to the right */}
-          <div className="absolute right-4 sm:right-8 lg:right-0 top-1/2 -translate-y-1/2 opacity-90">
-            <TubeMan />
-          </div>
-          
           <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
             KINN Thai Eatery
           </h1>
