@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail, Clock, ChevronLeft, ChevronRight, Menu, X, Moon, S
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { SiDoordash, SiUbereats } from "react-icons/si";
+import { SiDoordash, SiUbereats, SiGrubhub } from "react-icons/si";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
@@ -993,6 +993,25 @@ export default function Home() {
                 <div>
                   <h3 className="font-semibold text-foreground">Uber Eats</h3>
                   <p className="text-sm text-muted-foreground">Order with Uber Eats</p>
+                </div>
+              </div>
+              <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </a>
+            
+            <a
+              href="https://www.grubhub.com/restaurant/kinn-thai-eatery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-4 rounded-md border-2 border-border hover:border-primary hover:bg-primary/5 transition-all group"
+              data-testid="link-grubhub"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#F63440] rounded-md flex items-center justify-center">
+                  <SiGrubhub className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Grubhub</h3>
+                  <p className="text-sm text-muted-foreground">Order with Grubhub</p>
                 </div>
               </div>
               <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
