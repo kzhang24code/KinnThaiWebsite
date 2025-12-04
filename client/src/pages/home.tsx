@@ -814,6 +814,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Catering Section */}
+      <section id="catering" className="py-24 sm:py-32 bg-background">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-6">
+            Catering
+          </h2>
+          <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Bring the authentic flavors of KINN Thai to your next event. Whether it's a corporate gathering, 
+            private party, or special celebration, we offer customized catering packages to make your occasion memorable.
+          </p>
+          <Card className="p-8 inline-block">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Mail className="w-8 h-8 text-primary" />
+              <div className="text-center sm:text-left">
+                <p className="text-foreground font-semibold mb-1">Ready to order catering?</p>
+                <a
+                  href="mailto:kinnthaigroup@gmail.com"
+                  className="text-primary hover:underline font-medium text-lg"
+                  data-testid="link-catering-email"
+                >
+                  Email kinnthaigroup@gmail.com
+                </a>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
       {/* Location Section with Google Maps */}
       <section id="location" className="py-24 sm:py-32 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
