@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import Home from "@/pages/home";
 import Menu from "@/pages/menu";
+import Reservation from "@/pages/reservation";
 import NotFound from "@/pages/not-found";
 
 function AppRouter() {
@@ -15,6 +16,7 @@ function AppRouter() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/menu" component={Menu} />
+        <Route path="/reservation" component={Reservation} />
         <Route component={NotFound} />
       </Switch>
     </Router>

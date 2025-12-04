@@ -1,20 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { MapPin, Phone, Mail, Clock, ChevronLeft, ChevronRight, Menu, X, Moon, Sun, Users, ExternalLink, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { SiDoordash, SiUbereats, SiGrubhub } from "react-icons/si";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { insertReservationSchema, type InsertReservation } from "@shared/schema";
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isBefore, startOfToday, getDay } from "date-fns";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/theme-provider";
 import heroBgImage from "@assets/generated_images/elegant_red_watercolor_gradient.png";
 import basilFriedRiceImage from "@assets/dish-basil-fried-rice.png";
@@ -142,55 +133,14 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
-  const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  // Reservation wizard state
-  const [wizardStep, setWizardStep] = useState<"time" | "client">("time");
+  // Reservation state
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [partySize, setPartySize] = useState(2);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  const form = useForm<InsertReservation>({
-    resolver: zodResolver(insertReservationSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      date: "",
-      time: "",
-      partySize: 2,
-      specialRequests: ""
-    }
-  });
-
-  const createReservation = useMutation({
-    mutationFn: (data: InsertReservation) => 
-      apiRequest("POST", "/api/reservations", data),
-    onSuccess: () => {
-      setSubmitSuccess(true);
-      form.reset();
-      setSelectedDate(undefined);
-      setSelectedTime("");
-      setPartySize(2);
-      setWizardStep("time");
-      toast({
-        title: "Reservation Received!",
-        description: "We'll contact you shortly to confirm your reservation.",
-      });
-      setTimeout(() => setSubmitSuccess(false), 5000);
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.body?.message || error.message || "Please try again or contact us directly.";
-      toast({
-        title: "Reservation Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -212,10 +162,6 @@ export default function Home() {
     }
   };
 
-  const onSubmit = (data: InsertReservation) => {
-    createReservation.mutate(data);
-  };
-
   // Calendar helpers
   const today = startOfToday();
   const monthStart = startOfMonth(currentMonth);
@@ -229,25 +175,23 @@ export default function Home() {
   const handleDateSelect = (day: Date) => {
     if (!isBefore(day, today)) {
       setSelectedDate(day);
-      form.setValue("date", format(day, "yyyy-MM-dd"));
     }
   };
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    form.setValue("time", time);
   };
 
   const handlePartySizeChange = (size: number) => {
     setPartySize(size);
-    form.setValue("partySize", size);
   };
 
-  const canProceedToClient = selectedDate && selectedTime;
+  const canProceedToDetails = selectedDate && selectedTime;
 
-  const handleNextStep = () => {
-    if (canProceedToClient) {
-      setWizardStep("client");
+  const handleContinueToDetails = () => {
+    if (canProceedToDetails) {
+      const dateStr = format(selectedDate, "yyyy-MM-dd");
+      setLocation(`/reservation?date=${dateStr}&time=${encodeURIComponent(selectedTime)}&partySize=${partySize}`);
     }
   };
 
@@ -490,17 +434,8 @@ export default function Home() {
             </p>
           </div>
           
-          {submitSuccess && (
-            <div className="mb-8 p-6 bg-primary/10 border border-primary rounded-md text-center">
-              <p className="text-primary font-medium" data-testid="text-reservation-success">
-                Thank you! Your reservation request has been received. We'll contact you shortly to confirm.
-              </p>
-            </div>
-          )}
-          
           <Card className="overflow-hidden">
             <div className="p-6 lg:p-8">
-              {wizardStep === "time" ? (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                   {/* Left Sidebar */}
                   <div className="lg:col-span-1 space-y-8">
@@ -648,8 +583,8 @@ export default function Home() {
                     {/* Next Button */}
                     <div className="flex justify-end mt-8">
                       <Button
-                        onClick={handleNextStep}
-                        disabled={!canProceedToClient}
+                        onClick={handleContinueToDetails}
+                        disabled={!canProceedToDetails}
                         size="lg"
                         className="px-8"
                         data-testid="button-next-step"
@@ -660,155 +595,6 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              ) : (
-                /* Client Details Step */
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                  {/* Left Sidebar - Summary */}
-                  <div className="lg:col-span-1 space-y-6">
-                    <div className="p-4 bg-muted/50 rounded-md">
-                      <h3 className="font-serif text-xl font-bold text-foreground mb-4">Your Reservation</h3>
-                      <div className="space-y-3 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Date:</span>
-                          <p className="font-medium text-foreground">
-                            {selectedDate ? format(selectedDate, "EEEE, MMMM d, yyyy") : "-"}
-                          </p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Time:</span>
-                          <p className="font-medium text-foreground">{selectedTime || "-"}</p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Party Size:</span>
-                          <p className="font-medium text-foreground">{partySize} {partySize === 1 ? "Guest" : "Guests"}</p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-4"
-                        onClick={() => setWizardStep("time")}
-                        data-testid="button-edit-time"
-                      >
-                        Edit Selection
-                      </Button>
-                    </div>
-                    
-                    <div className="p-4 bg-muted/50 rounded-md">
-                      <h3 className="font-serif text-lg font-bold text-primary">KINN THAI</h3>
-                      <p className="text-xs text-muted-foreground mt-1">100 Foundry Drive Ste 17, West Lafayette</p>
-                    </div>
-                  </div>
-                  
-                  {/* Client Form */}
-                  <div className="lg:col-span-3">
-                    <h3 className="font-semibold text-lg text-foreground mb-6">Your Details</h3>
-                    
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Full Name</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="John Doe"
-                                    data-testid="input-name"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Email Address</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="email"
-                                    placeholder="john@example.com"
-                                    data-testid="input-email"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        
-                        <FormField
-                          control={form.control}
-                          name="phone"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Phone Number</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="tel"
-                                  placeholder="(765) 607-1751"
-                                  data-testid="input-phone"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="specialRequests"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Special Requests (Optional)</FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Dietary restrictions, allergies, or special occasions..."
-                                  className="resize-none min-h-[100px]"
-                                  data-testid="input-special-requests"
-                                  {...field}
-                                  value={field.value ?? ""}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <div className="flex gap-4 justify-end pt-4">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setWizardStep("time")}
-                            data-testid="button-back-step"
-                          >
-                            <ChevronLeft className="w-4 h-4 mr-2" />
-                            Back
-                          </Button>
-                          <Button
-                            type="submit"
-                            size="lg"
-                            disabled={createReservation.isPending}
-                            className="px-8"
-                            data-testid="button-submit-reservation"
-                          >
-                            {createReservation.isPending ? "Submitting..." : "Confirm Reservation"}
-                          </Button>
-                        </div>
-                      </form>
-                    </Form>
-                  </div>
-                </div>
-              )}
             </div>
           </Card>
         </div>
