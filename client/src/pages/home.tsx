@@ -450,12 +450,12 @@ export default function Home() {
                         <Users className="w-4 h-4" />
                         Party Size
                       </h4>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="grid grid-cols-8 gap-1">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map((size) => (
                           <button
                             key={size}
                             onClick={() => handlePartySizeChange(size)}
-                            className={`w-10 h-10 rounded-md font-medium transition-colors ${
+                            className={`aspect-square rounded-md font-medium text-sm transition-colors ${
                               partySize === size
                                 ? "bg-primary text-white"
                                 : "bg-muted text-foreground hover:bg-muted/80"
@@ -483,24 +483,24 @@ export default function Home() {
                     </div>
                     
                     {/* Calendar Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="grid grid-cols-3 items-center mb-6">
                       <button
                         onClick={goToPrevMonth}
-                        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium"
+                        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium justify-start"
                         data-testid="button-prev-month"
                       >
                         <ChevronLeft className="w-4 h-4" />
-                        Prev Month
+                        <span className="hidden sm:inline">Prev</span>
                       </button>
-                      <h3 className="font-semibold text-lg text-foreground">
+                      <h3 className="font-semibold text-lg text-foreground text-center">
                         {format(currentMonth, "MMMM yyyy")}
                       </h3>
                       <button
                         onClick={goToNextMonth}
-                        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium"
+                        className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors font-medium justify-end"
                         data-testid="button-next-month"
                       >
-                        Next Month
+                        <span className="hidden sm:inline">Next</span>
                         <ChevronRight className="w-4 h-4" />
                       </button>
                     </div>

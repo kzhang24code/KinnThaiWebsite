@@ -119,12 +119,12 @@ export default function Reservation() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-        <Link href="/#reservations">
+        <a href="/#reservations">
           <Button variant="ghost" className="mb-8" data-testid="button-back">
             <ChevronLeft className="w-4 h-4 mr-2" />
             Back to Reservations
           </Button>
-        </Link>
+        </a>
 
         <div className="text-center mb-12">
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-4">
