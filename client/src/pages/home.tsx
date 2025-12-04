@@ -499,33 +499,6 @@ export default function Home() {
           )}
           
           <Card className="overflow-hidden">
-            {/* Step Tabs */}
-            <div className="flex border-b">
-              <button
-                onClick={() => setWizardStep("time")}
-                className={`flex-1 py-4 text-center font-semibold transition-colors ${
-                  wizardStep === "time"
-                    ? "bg-primary text-white"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-                data-testid="tab-time"
-              >
-                Time
-              </button>
-              <button
-                onClick={() => canProceedToClient && setWizardStep("client")}
-                className={`flex-1 py-4 text-center font-semibold transition-colors ${
-                  wizardStep === "client"
-                    ? "bg-primary text-white"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                } ${!canProceedToClient ? "cursor-not-allowed opacity-50" : ""}`}
-                disabled={!canProceedToClient}
-                data-testid="tab-client"
-              >
-                Client
-              </button>
-            </div>
-            
             <div className="p-6 lg:p-8">
               {wizardStep === "time" ? (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -604,9 +577,7 @@ export default function Home() {
                         {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
                           <div
                             key={day}
-                            className={`py-3 text-center text-xs font-semibold ${
-                              day === "SAT" || day === "SUN" ? "text-primary" : "text-foreground"
-                            }`}
+                            className="py-3 text-center text-xs font-semibold text-foreground"
                           >
                             {day}
                           </div>
@@ -625,8 +596,6 @@ export default function Home() {
                           const isToday = isSameDay(day, today);
                           const isPast = isBefore(day, today);
                           const isSelected = selectedDate && isSameDay(day, selectedDate);
-                          const dayOfWeek = getDay(day);
-                          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                           
                           return (
                             <button
@@ -639,9 +608,7 @@ export default function Home() {
                                   : isSelected
                                   ? "bg-primary text-white font-bold"
                                   : isToday
-                                  ? "bg-primary/10 text-primary font-semibold"
-                                  : isWeekend
-                                  ? "text-primary hover:bg-primary/10"
+                                  ? "bg-muted font-semibold text-foreground"
                                   : "text-foreground hover:bg-muted"
                               }`}
                               data-testid={`button-date-${format(day, "yyyy-MM-dd")}`}
