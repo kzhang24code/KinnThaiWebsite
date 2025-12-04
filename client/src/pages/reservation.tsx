@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useSearch } from "wouter";
+import { Link, useSearch, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -23,8 +23,19 @@ import { insertReservationSchema, type InsertReservation } from "@shared/schema"
 
 export default function Reservation() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
+  
+  const handleBackToReservations = () => {
+    setLocation("/");
+    setTimeout(() => {
+      const reservationsSection = document.getElementById("reservations");
+      if (reservationsSection) {
+        reservationsSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  };
   
   const dateParam = params.get("date") || "";
   const timeParam = params.get("time") || "";
@@ -119,12 +130,15 @@ export default function Reservation() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-        <a href="/#reservations">
-          <Button variant="ghost" className="mb-8" data-testid="button-back">
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Back to Reservations
-          </Button>
-        </a>
+        <Button 
+          variant="ghost" 
+          className="mb-8" 
+          onClick={handleBackToReservations}
+          data-testid="button-back"
+        >
+          <ChevronLeft className="w-4 h-4 mr-2" />
+          Back to Reservations
+        </Button>
 
         <div className="text-center mb-12">
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-4">
